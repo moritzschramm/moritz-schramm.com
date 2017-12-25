@@ -1,0 +1,17 @@
+{
+  "lang": [
+    "de", "en"
+  ],
+  "de": {
+    "lang": "Deutsch",
+    "home": "Startseite",
+    "portfolio": "Portfolio",
+    "contact": "Kontakt"
+  },
+  "en": {
+    "lang": "English",
+    "home": "Home",
+    "portfolio": "Portfolio",
+    "contact": "Contact"
+  }
+}

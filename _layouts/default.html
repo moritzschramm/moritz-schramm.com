@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html class="has-navbar-fixed-top" lang="{{ page.lang }}">
+  <head>
+    {% include layout/head.html %}
+  </head>
+  <body>
+
+{% include layout/navbar.html %}
+
+{% include layout/hero.html %}
+
+<section class="section is-stretched">
+  <div class="container">
+    {{ content }}
+  </div>
+</section>
+
+{% include layout/footer.html %}
+
+{% include layout/custom-style.html %}
+
+  </body>
+</html>

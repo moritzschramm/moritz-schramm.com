@@ -1,0 +1,125 @@
+<style>
+* {
+  font-family: 'Roboto';
+}
+::selection{background-color:#3d3d3d;color:#f9f9f9;}
+::-moz-selection{background-color:#3d3d3d;color:#f9f9f9;}
+
+.ms-logo {
+  font-size: 24pt;
+  text-transform: uppercase;
+  font-family: 'Raleway', sans-serif;
+  font-weight: 900;
+  letter-spacing: -3px;
+}
+
+.card-hoverable {
+  position: relative;
+  min-height: 25vw;
+  transition: color 0.3s;
+  transition: background-color 0.3s;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.card-hoverable .card-content .content {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 60%;
+  transition: 0.3s;
+}
+
+@media screen and (max-width: 1215px) {
+  .card-hoverable {
+    min-height: 32vw;
+  }
+  .card-hoverable .card-content .content {
+    top: 50%;
+  }
+}
+@media screen and (max-width: 768px) {
+  .card-hoverable {
+    min-height: 100vw;
+  }
+  .card-hoverable .card-content .content {
+    top: 60%;
+  }
+}
+
+.card-hoverable .card-button {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 8%;
+  transition: 0.3s;
+}
+.card-hoverable:hover .card-button {
+  bottom: 25%;
+}
+.card-hoverable:hover .card-ts, .card-ts:hover {
+  background-color: #03a9f4;
+}
+.card-hoverable:hover .card-rv, .card-rv:hover  {
+  background-color: #E3493B;
+}
+.card-hoverable:hover .card-ssn, .card-ssn:hover {
+  background-color: #4caf50;
+}
+.card-hoverable:hover .card-en, .card-en:hover {
+  background-color: #ffc107;
+}
+.card-hoverable:hover .card-content .content {
+  top: 35%;
+}
+.card-hoverable:hover .card-content h5, .card-hoverable:hover .card-content a, .card-hoverable:hover .card-content strong {
+  color: #fff !important;
+}
+.card-hoverable:hover .button {
+  border: 1px solid rgba(0,0,0,0.15);
+}
+.card-hoverable .card-image {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 56.25%;
+  transition: 0.5s;
+}
+.card-hoverable:hover .card-image {
+  top: -51.5%;
+}
+
+.button {
+  transition-duration: 0.3s;
+}
+.button:hover {
+  border-color: rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0px 3px 4px rgba(0,0,0,0.3);
+}
+
+.is-stretched {
+  min-height: 70vh;
+}
+
+@media screen and (min-width: 864px) {
+
+  .card-is-sticky {
+    position: fixed;
+    width: 20%;
+  }
+}
+
+.has-background-img {
+  background-size: cover;
+  background-position: bottom;
+}
+
+.style-hero-title {
+  font-family: 'Raleway';
+  font-weight: 200;
+  text-shadow: 0px 3px 4px #000;
+}
+
+.navbar-burger {
+  height: auto;
+}
+</style>
