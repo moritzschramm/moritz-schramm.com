@@ -1,4 +1,4 @@
-
+{% comment %}
 <script>
 function sendEmail(e) {
 
@@ -27,13 +27,15 @@ function sendEmail(e) {
   xhttp.send({"email":email,"_subject":subject,"message":message});
 }
 </script>
+{% endcomment %}
+
 <div class="columns">
 
   <div class="column is-2"></div>
 
   <div class="column is-8">
 
-    <form role="form">
+    <form role="form" method="POST" action="https://formspree.io/moritz@moritz-schramm.com">
 
       <div class="field">
         <label class="label">{{ page.translations.email }}</label>
@@ -57,10 +59,14 @@ function sendEmail(e) {
       <label class="label">{{ page.translations.message }}</label>
       <textarea id="message" class="textarea" placeholder="{{ page.translations.message }}" name="message" rows="5"></textarea>
 
+      {% comment %}
       <input type="submit" value="" style="display:none">
+      {% endcomment %}
+      <input type="hidden" name="_next" value="https://moritz-schramm.com/{{ page.lang }}/contact"> 
+
       <br>
       <div class="control has-text-right">
-        <button id="btn-send" class="button is-warning" onclick="sendEmail(event);">{{ page.translations.send }}</button>
+        <button id="btn-send" class="button is-warning">{{ page.translations.send }}</button>
       </div>
 
     </form>

@@ -123,41 +123,14 @@ $navbarBurgers.forEach(function ($el) {
 <section class="section is-stretched">
   <div class="container">
     
-<script>
-function sendEmail(e) {
 
-  e.preventDefault();
-
-  document.getElementById("btn-send").className = "button is-info is-loading";
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.open("POST", "https://formspree.io/moritz@moritz-schramm.com", true);
-  xhttp.setRequestHeader("content-type", "application/json");
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-
-      document.getElementById("btn-send").className = "button is-info";
-      document.getElementById("email").value    = "";
-      document.getElementById("subject").value  = "";
-      document.getElementById("message").value  = "";
-    }
-  };
-
-  var email = document.getElementById("email").value;
-  var subject = document.getElementById("subject").value;
-  var message = document.getElementById("message").value;
-
-  //xhttp.send("email="+email+"&_subject="+subject+"&message="+message);
-  xhttp.send({"email":email,"_subject":subject,"message":message});
-}
-</script>
 <div class="columns">
 
   <div class="column is-2"></div>
 
   <div class="column is-8">
 
-    <form role="form">
+    <form role="form" method="POST" action="https://formspree.io/moritz@moritz-schramm.com">
 
       <div class="field">
         <label class="label">Email</label>
@@ -181,10 +154,12 @@ function sendEmail(e) {
       <label class="label">Message</label>
       <textarea id="message" class="textarea" placeholder="Message" name="message" rows="5"></textarea>
 
-      <input type="submit" value="" style="display:none">
+      
+      <input type="hidden" name="_next" value="https://moritz-schramm.com/en/contact"> 
+
       <br>
       <div class="control has-text-right">
-        <button id="btn-send" class="button is-warning" onclick="sendEmail(event);">Send</button>
+        <button id="btn-send" class="button is-warning">Send</button>
       </div>
 
     </form>
