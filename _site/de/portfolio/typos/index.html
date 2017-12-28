@@ -14,7 +14,7 @@
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:700,400|Oswald|Raleway:900,500,200">
-<link rel="stylesheet" href="http://localhost:4000/assets/css/bulma.css">
+<link rel="stylesheet" href="/assets/css/bulma.min.css">
 
 
 <link rel="apple-touch-icon" sizes="57x57" href="/assets/imgs/favicon/apple-icon-57x57.png">
@@ -296,6 +296,13 @@ Schließlich habe ich die App (zumindest das Back-End der App) komplett neu gesc
   .card-is-sticky {
     position: fixed;
     width: 20%;
+  }
+}
+@media screen and (min-width: 1670px) {
+
+  .card-is-sticky {
+    position: static;
+    width: auto;
   }
 }
 
