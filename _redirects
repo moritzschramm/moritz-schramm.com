@@ -4,5 +4,6 @@ http://moritz-schramm.com/* https://moritz-schramm.com/:splat 302!
 / /de/ 302 Language=de
 
 # Custom 404 redirects
+/* /de/404.html 404 Language=de
 /de/* /de/404.html 404
 /en/* /en/404.html 404
