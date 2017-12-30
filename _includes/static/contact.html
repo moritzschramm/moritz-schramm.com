@@ -33,10 +33,10 @@ function sendEmail(e) {
 
   var urlEncodedDataPairs = [];
   var data = {
-    form-name: "Contact",
-    email: document.getElementById("email").value,
-    subject: document.getElementById("subject").value,
-    message: document.getElementById("message").value
+    "form-name": "Contact",
+    "email": document.getElementById("email").value,
+    "subject": document.getElementById("subject").value,
+    "message": document.getElementById("message").value
   };
 
   for(name in data) {
