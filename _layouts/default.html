@@ -7,7 +7,9 @@
 
 {% include layout/navbar.html %}
 
-{% include layout/hero.html %}
+{% unless page.noHero %}
+  {% include layout/hero.html %}
+{% endunless %}
 
 <section class="section is-stretched">
   <div class="container">
