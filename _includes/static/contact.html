@@ -1,33 +1,52 @@
-{% comment %}
 <script>
 function sendEmail(e) {
 
   e.preventDefault();
 
-  document.getElementById("btn-send").className = "button is-info is-loading";
+  document.getElementById("notification-success").style.display = "none";
+  document.getElementById("notification-error").style.display   = "none";
+
+  document.getElementById("btn-send").className = "button is-warning is-loading";
+  var form = document.getElementById("contact-form");
 
   var xhttp = new XMLHttpRequest();
-  xhttp.open("POST", "https://formspree.io/moritz@moritz-schramm.com", true);
-  xhttp.setRequestHeader("content-type", "application/json");
+  xhttp.open("POST", form.action, true);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
+    if (this.readyState == XMLHttpRequest.DONE) {
 
-      document.getElementById("btn-send").className = "button is-info";
-      document.getElementById("email").value    = "";
-      document.getElementById("subject").value  = "";
-      document.getElementById("message").value  = "";
+      document.getElementById("btn-send").className = "button is-warning";
+
+      if(this.status == 200) {
+
+        document.getElementById("email").value    = "";
+        document.getElementById("subject").value  = "";
+        document.getElementById("message").value  = "";
+        document.getElementById("notification-success").style.display = "block";
+
+      } else {
+
+        document.getElementById("notification-error").style.display = "block";
+      }
     }
   };
 
-  var email = document.getElementById("email").value;
-  var subject = document.getElementById("subject").value;
-  var message = document.getElementById("message").value;
+  var urlEncodedDataPairs = [];
+  var data = {
+    email: document.getElementById("email").value,
+    subject: document.getElementById("subject").value,
+    message: document.getElementById("message").value
+  };
 
-  //xhttp.send("email="+email+"&_subject="+subject+"&message="+message);
-  xhttp.send({"email":email,"_subject":subject,"message":message});
+  for(name in data) {
+    urlEncodedDataPairs.push(encodeURIComponent(name) + '=' + encodeURIComponent(data[name]));
+  }
+
+  urlEncodedData = urlEncodedDataPairs.join('&').replace(/%20/g, '+');
+
+  xhttp.send(urlEncodedData);
 }
 </script>
-{% endcomment %}
 
 <div class="columns">
 
@@ -35,7 +54,7 @@ function sendEmail(e) {
 
   <div class="column is-8">
 
-    <form role="form" method="POST" action="https://formspree.io/moritz@moritz-schramm.com">
+    <form id="contact-form" role="form" name="Contact" method="POST" action="/{{ page.lang }}/contact" data-netlify="true">
 
       <div class="field">
         <label class="label">{{ page.translations.email }}</label>
@@ -49,7 +68,7 @@ function sendEmail(e) {
       <div class="field">
         <label class="label">{{ page.translations.subject }}</label>
         <p class="control has-icons-left">
-          <input id="subject" class="input" type="text" name="_subject" placeholder="{{ page.translations.subject }}">
+          <input id="subject" class="input" type="text" name="subject" placeholder="{{ page.translations.subject }}">
           <span class="icon is-small is-left">
             <i class="fa fa-pencil"></i>
           </span>
@@ -59,14 +78,19 @@ function sendEmail(e) {
       <label class="label">{{ page.translations.message }}</label>
       <textarea id="message" class="textarea" placeholder="{{ page.translations.message }}" name="message" rows="5"></textarea>
 
-      {% comment %}
-      <input type="submit" value="" style="display:none">
-      {% endcomment %}
-      <input type="hidden" name="_next" value="https://moritz-schramm.com/{{ page.lang }}/contact"> 
+      <div class="control">
+        <div id="notification-success" class="notification is-success" style="margin-top:7px;display:none;">
+          {{ page.translations.notification-success }}
+        </div>
+        <div id="notification-error" class="notification is-danger" style="margin-top:7px;display:none;">
+          {{ page.translations.notification-error }}
+        </div>
+      </div>
 
+      <input type="submit" value="" style="display:none">
       <br>
       <div class="control has-text-right">
-        <button id="btn-send" class="button is-warning">{{ page.translations.send }}</button>
+        <button type="button" id="btn-send" class="button is-warning" onclick="sendEmail(event);">{{ page.translations.send }}</button>
       </div>
 
     </form>
