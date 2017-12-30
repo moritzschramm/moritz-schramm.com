@@ -1,0 +1,4 @@
+# Use HTTPS automatically
+http://moritz-schramm.com/* https://moritz-schramm.com/:splat 302!
+# Redirect specific language
+/ /de/ 302 Language=de
