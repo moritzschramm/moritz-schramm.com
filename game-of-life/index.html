@@ -1,0 +1,77 @@
+---
+permalink: /game-of-life
+---
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+    <title>Game Of Life</title>
+    <link rel="stylesheet" type="text/css" href="/game-of-life/style.css">
+
+  </head>
+  <body>
+
+    <canvas id="canvas" width="2000" height="1000"></canvas>
+    <div class="control-panel">
+      <button type="button" class="btn" onclick="startGame()">Start</button>
+      <button type="button" class="btn" onclick="stopGame()">Stop</button>
+      <button type="button" class="btn" onclick="clearAll()">Clear</button>
+      <span id="console">Init</span>
+
+      <div class="dropdown" id="creation-dropdown">
+        <button type="button" class="btn">Create...
+          <span class="dropdown-caret"></span></button>
+          <div id="creation-dropdown-modal" class="dropdown-modal dropdown-hidden">
+            <ul>
+              <li onclick="spawnGlider()">Spawn Glider</li>
+              <li onclick="spawnPulsar()">Spawn Pulsar</li>
+              <li onclick="spawnRPentomino()">Spawn r-Pentomino</li>
+              <li onclick="spawnHeavyWeigthSpaceship()">Spawn Heavy Weight Spaceship</li>
+              <li onclick="spawnGliderGun()">Spawn Gosper's Glider Gun</li>
+            </ul>
+          </div>
+      </div>
+
+
+      <a id="github_link" href="https://github.com/moritzschramm/game-of-live-js" class="btn" style="float: right;" target="_blank">Source code (on GitHub)</a>
+
+      <span class="btn" style="float: right;" id="how_to">
+        How to play
+        <div class="modal">
+          <ul>
+            <li>Left Click: set cell to black (living cell)</li>
+            <li>Right Click: set cell to white (dead cell)</li>
+            <li>Once the game is running, you can only edit the grid by stopping the game</li>
+            <li>Use your mouse wheel to zoom (grid is fixed to center)</li>
+          </ul>
+        </div>
+      </span>
+      <span class="btn" style="float: right;" id="rules">
+        Rules
+        <div class="modal">
+          <ul>
+            <li>Living cells with 2 or 3 neighbours survive, if the amount of neighbours is smaller than 2 or greater than 3 the cell will die (will become white)</li>
+            <li>Dead cells with exactly 3 neighbours spawn (become black)</li>
+            <li>One cell has 8 neighbours (a square around the cell)</li>
+          </ul>
+        </div>
+      </span>
+
+
+    </div>
+
+    <script src="/game-of-life/app.js"></script>
+    <script src="/game-of-life/game-of-life.js"></script>
+
+
+    <!-- HELPER SCRIPTS, just for some extra features -->
+    <script
+			  src="https://code.jquery.com/jquery-3.1.1.min.js"
+			  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+			  crossorigin="anonymous"></script>
+    <script src="/game-of-life/dropdown.js"></script>
+    <script src="/game-of-life/spawnObjects.js"></script>
+
+  </body>
+</html>
