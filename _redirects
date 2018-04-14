@@ -4,6 +4,11 @@ http://develop.moritz-schramm.com/* https://develop.moritz-schramm.com/:splat 30
 
 # Redirect specific language
 / /de/ 302 Language=de
+/portfolio /de/portfolio 302 Language=de
+/portfolio /en/portfolio 302 Language=en
+/contact /en/contact 302
+/kontakt /de/contact 302
+
 
 # Custom 404 redirects
 /de/* /de/404.html 404
