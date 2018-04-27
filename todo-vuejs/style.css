@@ -1,0 +1,32 @@
+.is-static {
+	margin-left: 11px;
+	background-color: transparent; 
+}
+.line-through {
+	text-decoration: line-through;
+}
+
+.level:last-child {
+	margin-bottom: 1.5rem;
+}
+
+.todo-list-item {
+	transition: all .2s;
+}
+
+.todo-list-enter {
+	opacity: 1;
+}
+.todo-list-leave-to {
+ 	opacity: 0;
+ 	transform: translateX(1rem);
+}
+.todo-list-leave-active {
+ 	position: absolute;
+}
+.todo-list-leave-active .button {
+	opacity: 0;
+}
+.todo-list-move {
+	transition: transform .15s;
+}
