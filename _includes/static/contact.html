@@ -1,42 +1,17 @@
 <script>
-function sendEmail(e) {
-
-  e.preventDefault();
+function sendEmail(token) {
 
   document.getElementById("notification-success").style.display = "none";
   document.getElementById("notification-error").style.display   = "none";
 
   document.getElementById("btn-send").className = "button is-warning is-loading";
-  var form = document.getElementById("contact-form");
-
-  var xhttp = new XMLHttpRequest();
-  xhttp.open("POST", form.action, true);
-  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == XMLHttpRequest.DONE) {
-
-      document.getElementById("btn-send").className = "button is-warning";
-
-      if(this.status == 200) {
-
-        document.getElementById("email").value    = "";
-        document.getElementById("subject").value  = "";
-        document.getElementById("message").value  = "";
-        document.getElementById("notification-success").style.display = "block";
-
-      } else {
-
-        document.getElementById("notification-error").style.display = "block";
-      }
-    }
-  };
 
   var urlEncodedDataPairs = [];
   var data = {
-    "form-name": "Contact",
     "email": document.getElementById("email").value,
     "subject": document.getElementById("subject").value,
-    "message": document.getElementById("message").value
+    "message": document.getElementById("message").value,
+    "g-recaptcha-response": token
   };
 
   for(name in data) {
@@ -45,7 +20,22 @@ function sendEmail(e) {
 
   urlEncodedData = urlEncodedDataPairs.join('&').replace(/%20/g, '+');
 
-  xhttp.send(urlEncodedData);
+  post(urlEncodedData, function(ok) {
+
+    document.getElementById("btn-send").className = "button is-warning";
+
+    if(ok) {
+
+        document.getElementById("email").value    = "";
+        document.getElementById("subject").value  = "";
+        document.getElementById("message").value  = "";
+        document.getElementById("notification-success").style.display = "block";
+
+    } else {
+
+        document.getElementById("notification-error").style.display = "block";
+    }
+  });
 }
 </script>
 
@@ -54,8 +44,6 @@ function sendEmail(e) {
   <div class="column is-2"></div>
 
   <div class="column is-8">
-
-    <form id="contact-form" role="form" name="Contact" method="POST" action="/{{ page.lang }}/contact" data-netlify="true">
 
       <div class="field">
         <label class="label">{{ page.translations.email }}</label>
@@ -88,16 +76,21 @@ function sendEmail(e) {
         </div>
       </div>
 
-      <input type="submit" value="" style="display:none">
       <br>
       <div class="control has-text-right">
-        <button type="button" id="btn-send" class="button is-warning" onclick="sendEmail(event);">{{ page.translations.send }}</button>
+        <button type="button" 
+                id="btn-send" 
+                class="button is-warning g-recaptcha" 
+                data-sitekey="6LfIjlYUAAAAAGcH2Kg__ARWNk1HgUgLrFbegJlM"
+                data-callback="sendEmail">
+            {{ page.translations.send }}
+        </button>
       </div>
-
-    </form>
 
   </div>
 
   <div class="column is-2"></div>
 
 </div>
+<script src='https://www.google.com/recaptcha/api.js'></script>
+<script src='https://mail.moritz-schramm.com/lib'></script>

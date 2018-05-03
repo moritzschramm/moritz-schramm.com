@@ -3,7 +3,7 @@
 <title>{{ page.title }}</title>
 {% for lang in site.data.lang.lang %}
 {% unless lang == page.lang %}
-<link rel="alternate" hreflang="{{ lang }}" href="/{{ lang }}/{{ page.ref }}" />
+<link rel="alternate" hreflang="{{ lang }}" href="/{{ lang }}/{% unless page.indexpage %}{{ page.ref }}/{% endunless %}" />
 {% endunless %}
 {% endfor %}
 
