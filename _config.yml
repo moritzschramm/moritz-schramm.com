@@ -1,3 +1,4 @@
 include: ["_redirects"]
+exclude: ["de/contact.html", "en/contact.html"]
 plugins:
   - jekyll-redirect-from
