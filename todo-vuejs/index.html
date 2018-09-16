@@ -1,57 +1,12 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<title>Todo Demo</title>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Todo Demo</title>
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
-	<link rel="stylesheet" type="text/css" href="/todo-vuejs/style.css">
-    <link rel="stylesheet" type="text/css" href="/todo-vuejs/icons/css/materialdesignicons.min.css">
-</head>
-<body>
-
-	<div class="columns is-centered">
-		<div class="column is-half" id="app">
-
-			<hr>                                                   
-            <div class="level">                                     
-                <div class="level-left">                            
-                    <div class="level-item">                        
-                        <span class="title">Current Todos</span>    
-                    </div>                                          
-                </div>                                              
-                <div class="level-right">                           
-                    <order-select                                   
-                        v-bind:loader="loading"                     
-                        v-model="orderSelection"                    
-                        v-on:order-changed="orderChanged">          
-                    </order-select>                                 
-                </div>                                              
-            </div>                                                  
-                                                                    
-            <hr>                                                    
-                                                                    
-            <transition-group name="todo-list" tag="div">           
-                                                                    
-            <todo v-for="(todo, index) in todos"                    
-                v-bind:key="todo.id"                                
-                v-bind:todo="todo"                                  
-                v-bind:index="index"                                
-                v-on:toggle="toggleTodo"                            
-                v-on:edit="editTodo"                                
-                v-on:delete="deleteTodo">                           
-            </todo>                                                 
-                                                                    
-            <create-todo-button                                     
-                v-bind:key="maxId"                                  
-                v-on:create-todo="addTodo">    	
-            </create-todo-button>                                  
-                                                                    
-            </transition-group>
-
-		</div>
-	</div>
-
-	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-	<script src="/todo-vuejs/app.js"></script>
-
-</body>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script src="/dist/build.js"></script>
+  </body>
 </html>
