@@ -2,7 +2,7 @@
 
   {% for post in site.categories.[page.lang] %}
   <div class="column is-3">
-    <div class="card card-hoverable card-{{ post.css }}">
+    <div class="card card-hoverable card-{{ post.css }}" onclick="window.location = '/{{ page.lang }}/{{ post.ref }}/';">
       <div class="card-image" >
         <figure class="image is-16by9" >
           <img src="/assets/imgs/{{ post.ref }}.png" alt="{{ post.title }}"
