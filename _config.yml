@@ -1,4 +1,0 @@
-include: ["_redirects"]
-exclude: ["de/contact.html", "en/contact.html", "readme.md"]
-plugins:
-  - jekyll-redirect-from
