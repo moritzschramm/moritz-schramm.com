@@ -1,20 +1,21 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+	function toggleNavbar() {
+		var button = document.getElementById('navButton');
+		var target = document.getElementById(button.dataset.target);
+		
+		button.classList.toggle('is-active');
+		target.classList.toggle('is-active');
+	}
 
-if ($navbarBurgers.length > 0) {
+	document.getElementById('navButton').addEventListener('click', toggleNavbar);
 
-$navbarBurgers.forEach(function ($el) {
-  $el.addEventListener('click', function () {
+	var navItems = Array.prototype.slice.call(document.querySelectorAll('.item-scroll'), 0);
 
-    var target = $el.dataset.target;
-    var $target = document.getElementById(target);
+	if(navItems.length > 0) {
 
-    $el.classList.toggle('is-active');
-    $target.classList.toggle('is-active');
-
-  });
-});
-}
-
+		navItems.forEach(function(elem) {
+			elem.addEventListener('click', toggleNavbar);
+		});
+	}
 });
