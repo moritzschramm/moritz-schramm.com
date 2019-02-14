@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html {{ if not .Page.IsHome }} class="has-navbar-fixed-top" {{ end }} lang="{{ .Site.LanguageCode }}">
+  <head>
+    {{ partial "head.html" . }}
+
+    {{ block "head" . }}
+
+    {{ end }}
+  </head>
+  <body>
+
+    {{ block "header" . }}
+
+    {{ end }}
+
+
+    {{ partial "navbar.html" . }}
+
+
+    {{ block "main" . }}
+
+    {{ end }}
+
+
+    {{ partial "footer.html" . }}
+
+
+    {{ block "footer" . }}
+
+    {{ end }}
+  	<script src="/scripts/site.js"></script>
+  </body>
+</html>

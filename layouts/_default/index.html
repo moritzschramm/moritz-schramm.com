@@ -1,0 +1,104 @@
+{{ define "title" }}Homepage of Moritz Schramm{{ end }}
+
+{{ define "header" }}
+<section class="hero is-dark is-large" style="background-image: url('/imgs/hero.jpg'); background-position: center; background-size: cover;">
+	<div class="hero-body has-text-centered">
+	  <div class="container">
+	    <h1 class="title is-size-1 is-hidden-mobile" style="font-family: 'Raleway', sans-serif; font-weight: 300; text-shadow: #000 0px 2px 5px;">
+	      Welcome</h1>
+	  </div>
+	</div>
+</section>
+{{ end }}
+
+{{ define "main" }}
+
+<section class="hero is-light">
+  <div class="hero-body has-text-centered">
+    <div class="container">
+      <h1 id="projects" class="title is-size-1" style="font-family: 'Raleway', sans-serif; font-weight: 300;">
+        Projects</h1>
+    </div>
+  </div>
+</section>
+
+
+{{ range $i, $entry := $.Site.Data.projects.entry }}
+	<section>
+	  <div class="columns is-gapless is-vcentered {{ if mod $i 2 }}is-inverted{{ end }}">
+	    
+	    <div class="column has-hoverable-shadow">
+	      <a href="{{ $entry.url }}">
+	        <figure class="image is-2by1">
+	          <img src="{{ $entry.img }}">
+	        </figure>
+	      </a>
+	    </div>
+
+	    <div class="column has-text-centered">
+	      <div style="padding: 10px;">
+	      <h2 class="title" style="font-family: Oswald;">{{ $entry.title }}</h2>
+
+	      <div class="columns">
+	        <div class="column is-2 is-hidden-mobile"></div>
+	        <div class="column is-8">
+	          <p>{{ $entry.text }}</p>
+	        </div>
+	        <div class="column is-2"></div>
+	      </div>
+	      </div>
+	    </div>
+
+	  </div>
+	</section>
+{{ end }}
+
+<section id="contact" class="hero is-light is-medium">
+  <div class="hero-body has-text-centered">
+    <div class="container">
+
+      <h1 class="title is-size-1 has-text-centered" style="font-family: 'Raleway', sans-serif; font-weight: 300;">
+          Contact</h1>
+
+      <div class="columns is-centered">
+
+        <div class="column is-3">
+          <ul>
+            <li class="is-size-5">Email: <a href="mailto:pm@moritz-schramm.com">pm@moritz-schramm.com</a></li>
+            <li class="is-size-5">GitHub: <a href="https://github.com/moritzschramm">@moritzschramm</a></li>
+            <li class="is-size-5">Twitter: <a href="https://twitter.com/@_moritzschramm">@_moritzschramm</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</section>
+
+{{ end }}
+
+{{ define "footer" }}
+<script>
+function setNavbarStyle(){document.getElementById('navbar').style=window.scrollY==0?"background-color:rgba(0,0,0,0);":"";}
+document.addEventListener('DOMContentLoaded', setNavbarStyle);
+window.addEventListener('scroll',setNavbarStyle);
+
+if(document.body.scrollIntoView !== undefined) {
+	var elems = document.getElementsByClassName('item-scroll');
+	for(var i = 0; i < elems.length; i++) {
+
+		elems[i].addEventListener('click', function(event) {
+
+			event.preventDefault();
+			var hash = event.target.attributes.href.value.replace("/#", "");
+			if(hash !== "") {
+				document.getElementById(hash).scrollIntoView({behavior: "smooth", block: "center"});
+			} else {
+				document.body.scrollIntoView({behavior: "smooth", block: "start"});
+			}
+		});
+	}
+}
+</script>
+{{ end }}

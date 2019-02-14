@@ -1,0 +1,15 @@
+{
+  "name": "moritz-schramm.com",
+  "version": "1.0.0",
+  "main": "sass/mystyles.scss",
+  "scripts": {
+    "css-build": "node-sass --omit-source-map-url sass/mystyles.scss static/styles/mystyles.css",
+    "css-watch": "npm run css-build -- --watch",
+    "start": "npm run css-watch"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "bulma": "^0.7.4",
+    "node-sass": "^4.11.0"
+  }
+}

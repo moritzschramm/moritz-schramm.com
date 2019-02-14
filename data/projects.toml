@@ -1,0 +1,52 @@
+[[entry]]
+title = "Typos"
+img = "/imgs/typos-splash.jpg"
+url = "https://typos.moritz-schramm.com"
+text = """
+Typos is an online trainer with which you can learn the touch typing system. 
+The app loads the training content and displays a virtual keyboard that shows which keys to press, 
+while more experienced users can also hide the keyboard. 
+The app calculates the speed and the accuracy of the user in the background. 
+In the full, non-static version, users can choose between lections and training sessions, 
+commonly misspelled words will be asked more frequently in future sessions and 
+users can create own lections and practice with them as well.
+"""
+
+[[entry]]
+title = "EasyNotify"
+img = "/imgs/en-splash.jpg"
+url = "http://easynotify.de"
+text = """
+EasyNotify is a note reminder app for android devices. 
+The purpose of the app is to organize notes as easily as possible. 
+You can add so called 'Notifys' to lists. 
+The app will display a permanent notification of each list in the notification bar, 
+so that you will always see your notes when you check your notifications. 
+There is also a reminder service with which you can create a reminder with a time at, for example, 1 pm every day. 
+The app will then send you a notification at that point of time. 
+Of course you can also choose the interval of recurring reminders. 
+Currently, the app has over 50,000 downloads and over 1,500 ratings with an average rating of 4.5 out of 5 stars. 
+"""
+
+
+[[entry]]
+title = "Robert Voit"
+img = "/imgs/rv-splash.jpg"
+url = "https://robert-voit.de"
+text = """
+The website should serve as the homepage for the carpenter Robert Voit. 
+In addition to general information, a contact form and gallery are also available. 
+The site is completely responsive with a fullscreen mode for the gallery and was built using Jekyll. 
+"""
+
+[[entry]]
+title = "Senioren Service Neustadt"
+img = "/imgs/ssn-splash.jpg"
+url = "https://senioren-service-neustadt.de"
+text = """
+The website of Senioren-Service-Neustadt e.V. was completely remade. 
+Both the design, as well as the hosting, email and domain providers have been changed. 
+At first, the new website was developed using Jekyll, and the repository was uploaded to a server. 
+Next, the email provider has been changed and the requied DNS records were added. 
+To avoid downtime, the records of the nameservers were changed at the very end and the new site was made public. 
+"""

@@ -1,0 +1,31 @@
+<nav id="navbar" class="navbar is-fixed-top is-dark" role="navigation" aria-label="main navigation" 
+  {{ if .Page.IsHome }} style="background-color: rgba(0,0,0,0);" {{ end }}>
+  <div class="navbar-brand">
+    <a class="navbar-item ms-logo" href="/">
+      Moritz Schramm 
+    </a>
+
+    <div class="burger navbar-burger" data-target="navMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div class="navbar-menu" id="navMenu">
+
+    <div class="navbar-end">
+      <a class="navbar-item item-scroll" href="/#">
+        Home
+      </a>
+      <a class="navbar-item item-scroll" href="/#projects">
+        Projects
+      </a>
+      <a class="navbar-item item-scroll" href="/#contact">
+        Contact
+      </a>
+      <span style="padding-right: 6rem;"></span>
+    </div>
+
+  </div>
+</nav>
