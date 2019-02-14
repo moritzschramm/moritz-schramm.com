@@ -2,6 +2,9 @@
 <html {{ if not .Page.IsHome }} class="has-navbar-fixed-top" {{ end }} lang="{{ .Site.LanguageCode }}">
   <head>
     {{ partial "head.html" . }}
+    <title>{{ block "title" . }}
+      {{ .Site.Title }}
+    {{ end }}</title>
 
     {{ block "head" . }}
 
