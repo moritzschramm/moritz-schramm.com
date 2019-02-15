@@ -5,7 +5,11 @@
   "scripts": {
     "css-build": "node-sass --omit-source-map-url sass/mystyles.scss static/styles/mystyles.css",
     "css-watch": "npm run css-build -- --watch",
-    "start": "npm run css-watch"
+    "start": "npm run css-watch",
+    "purge-css": "purgecss --css static/styles/mystyles.css --content public/*.html public/impressum/*.html public/privacy-policy/*.html public/scripts/*.js --out static/styles/",
+    "minify-css": "uglifycss static/styles/mystyles.css > static/styles/mystyles.min.css",
+    "build": "npm run css-build && npm run purge-css && npm run minify-css",
+    "watch": "npm run build -- --watch"
   },
   "license": "ISC",
   "devDependencies": {
