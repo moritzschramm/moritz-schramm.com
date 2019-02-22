@@ -8,16 +8,6 @@
   </url>
   
   <url>
-    <loc>https://moritz-schramm.com/privacy-policy/</loc>
-    <lastmod>2019-02-13T19:19:25+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://moritz-schramm.com/impressum/</loc>
-    <lastmod>2019-02-13T19:19:16+01:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://moritz-schramm.com/</loc>
     <priority>0</priority>
     <xhtml:link
@@ -45,6 +35,12 @@
                 hreflang="en"
                 href="https://moritz-schramm.com/"
                 />
+  </url>
+  
+  <url>
+    <loc>https://moritz-schramm.com/</loc>
+    <lastmod>2019-02-13T19:19:32+01:00</lastmod>
+    <priority>0</priority>
   </url>
   
 </urlset>
