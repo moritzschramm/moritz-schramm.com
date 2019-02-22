@@ -1,3 +1,8 @@
 baseURL = "https://moritz-schramm.com/"
 languageCode = "en-us"
 title = "Moritz Schramm"
+
+[taxonomies]
+  tag = ""
+  group = ""
+  category = ""
