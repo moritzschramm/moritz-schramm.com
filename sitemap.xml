@@ -18,13 +18,33 @@
   </url>
   
   <url>
-    <loc>https://moritz-schramm.com/categories/</loc>
+    <loc>https://moritz-schramm.com/</loc>
     <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://moritz-schramm.com/"
+                />
   </url>
   
   <url>
-    <loc>https://moritz-schramm.com/tags/</loc>
+    <loc>https://moritz-schramm.com/</loc>
     <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://moritz-schramm.com/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://moritz-schramm.com/</loc>
+    <priority>0</priority>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://moritz-schramm.com/"
+                />
   </url>
   
 </urlset>
