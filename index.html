@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html  lang="en-us">
   <head>
-	<meta name="generator" content="Hugo 0.75.1" />
+	<meta name="generator" content="Hugo 0.80.0" />
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Homepage of Moritz Schramm. This website contains a collection of my projects and contact information.">
@@ -232,8 +232,19 @@ To avoid downtime in the development process, the records of the nameservers wer
 	</section>
 
 
-<section id="contact" class="hero is-dark is-large"
-	style="background-image: linear-gradient(to bottom right, #1A237E, #009688);"
+<style>
+	.fade-color {
+		background-size: auto 200%;
+		background-position: 0 100%;
+		transition: background-position 15s;
+		background-image: linear-gradient(to bottom right, #ff0000, #0000ff);
+	}
+	.fade-color:hover {
+		background-position: 0 0;
+	}
+
+</style>
+<section id="contact" class="hero is-dark is-large fade-color"
 >
   <div class="hero-body has-text-centered">
     <div class="container">
@@ -277,7 +288,7 @@ To avoid downtime in the development process, the records of the nameservers wer
         <li class="is-size-5"><a href="/privacy-policy/">Privacy Policy</a></li>
         <li class="is-size-5"><a href="/impressum/">Impressum</a></li>
         <br>
-        <li class="is-size-6">Moritz Schramm © 2020</li>
+        <li class="is-size-6">Moritz Schramm © 2021</li>
       </ul>  
     </div>
   </div>
