@@ -56,8 +56,19 @@ Moritz Schramm | Homepage
 	</section>
 {{ end }}
 
-<section id="contact" class="hero is-dark is-large"
-	style="background-image: linear-gradient(to bottom right, #1A237E, #009688);"
+<style>
+	.fade-color {
+		background-size: auto 200%;
+		background-position: 0 100%;
+		transition: background-position 15s;
+		background-image: linear-gradient(to bottom right, #ff0000, #0000ff);
+	}
+	.fade-color:hover {
+		background-position: 0 0;
+	}
+
+</style>
+<section id="contact" class="hero is-dark is-large fade-color"
 >
   <div class="hero-body has-text-centered">
     <div class="container">
