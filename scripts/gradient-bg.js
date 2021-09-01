@@ -10,8 +10,9 @@ var colors = [
 var step = 0.0;
 var colorIndices = [0,1,2,3];
 var gradientSpeed = 0.001;
+var background = document.getElementById("gradient");
 
-function updateGradient() {
+function update() {
   
   var c0_0 = colors[colorIndices[0]];
   var c0_1 = colors[colorIndices[1]];
@@ -29,8 +30,7 @@ function updateGradient() {
   var b2 = Math.round(istep * c1_0[2] + step * c1_1[2]);
   var color2 = "rgb("+r2+","+g2+","+b2+")";
 
-  element = document.getElementById("gradient");
-  element.style.backgroundImage = "linear-gradient(to bottom right, "+color1+", "+color2+")";
+  background.style.backgroundImage = "linear-gradient(to bottom right, "+color1+", "+color2+")";
   
   step += gradientSpeed;
 
@@ -46,4 +46,4 @@ function updateGradient() {
   }
 }
 
-setInterval(updateGradient, 10);
+setInterval(update, 10);

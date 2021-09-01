@@ -147,9 +147,6 @@ strong {
 .content ul ul ul {
   list-style-type: square;
 }
-.content.is-large {
-  font-size: 1.5rem;
-}
 
 .icon {
   align-items: center;
@@ -157,10 +154,6 @@ strong {
   justify-content: center;
   height: 1.5rem;
   width: 1.5rem;
-}
-.icon.is-large {
-  height: 3rem;
-  width: 3rem;
 }
 
 .image {
@@ -268,11 +261,6 @@ strong {
 .hero.is-dark .title {
   color: #fff;
 }
-@media screen and (min-width: 769px), print {
-  .hero.is-large .hero-body {
-    padding: 18rem 6rem;
-  }
-}
  .hero.is-fullheight .hero-body {
   align-items: center;
   display: flex;
@@ -302,9 +290,6 @@ strong {
 @media screen and (min-width: 1024px) {
   .section {
     padding: 3rem 3rem;
-  }
-  .section.is-large {
-    padding: 18rem 6rem;
   }
 }
 
