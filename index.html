@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-	<meta name="generator" content="Hugo 0.87.0" />
+	<meta name="generator" content="Hugo 0.118.2">
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Homepage of Moritz Schramm. This website contains contact information.">
@@ -62,11 +62,11 @@ Moritz Schramm | Homepage
     
 
 <section id="gradient" class="hero is-fullheight is-dark">
+  <canvas id="canvas" style="position: absolute;"></canvas>
   <div class="hero-body has-text-centered">
     <div class="container">
 
-      <h1 id="title" class="title is-size-1" style="font-weight: 200; text-shadow: #333 0px 2px 5px;">
-        Hello <br> <span style="writing-mode: vertical-rl;">: )</span>
+      <h1 id="title" class="title is-size-1" style="font-weight: 200; text-shadow: #333 0px 2px 5px;"><span style="writing-mode:sideways-lr;">ö</span>
       </h1>
 
       <div class="columns is-centered">
@@ -74,9 +74,9 @@ Moritz Schramm | Homepage
         <div class="column is-6">
           <ul>
             <li class="is-size-5">
-            	<a id="mail" href="mailto:x@mo5.ch" style="text-shadow: #333 0px 1px 4px;">
+            	<a id="mail" href="mailto:mail@mo5.ch" style="text-shadow: #333 0px 1px 4px;">
 	            	<span class="icon"><i class="fa fa-envelope"></i></span>
-	            	<strong>x@mo5.ch</strong>
+	            	<strong>mail@mo5.ch</strong>
 	            </a>
 	        	</li>
             <li class="is-size-5">
@@ -86,7 +86,7 @@ Moritz Schramm | Homepage
             	</a>
             </li>
             <li class="is-size-5">
-            	<a id="pkey" href="/publickey.x@mo5.ch.asc" style="text-shadow: #333 0px 1px 4px;"> 
+            	<a id="pkey" href="/publickey.mail@mo5.ch.asc" style="text-shadow: #333 0px 1px 4px;"> 
             		<span class="icon"><i class="fa fa-key"></i></span>
             		<strong>public key</strong>
             	</a>
@@ -100,7 +100,11 @@ Moritz Schramm | Homepage
 
 </section>
 
-<script src="/scripts/gradient-bg.min.js"></script>
+
+<script src="/scripts/microcan.window.js"></script>
+<script src="/scripts/vec.window.js"></script>
+<script src="/scripts/flowfields.js"></script>
+<script src="/scripts/gradient-bg.js"></script>
 
 
 
