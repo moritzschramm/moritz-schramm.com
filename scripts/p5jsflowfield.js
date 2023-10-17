@@ -40,7 +40,7 @@ function draw() {
 	for (var i = 0; i < maxFrameCount; i++) {
 
 		var distCenter = dist(width / 2, height / 2, points[i].x, points[i].y);
-		var circRadius = width / 2;
+		var circRadius = Math.max(width, height) / 2;
 
 		var r = map(points[i].x, 0, width, r1, r2);
 		var g = map(points[i].y, 0, height, g1, g2);

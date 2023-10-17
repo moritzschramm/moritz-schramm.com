@@ -52,9 +52,33 @@ Impressum | Moritz Schramm
     <link rel="icon" type="image/png" sizes="96x96" href="/imgs/favicon/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/imgs/favicon/favicon-16x16.png">
     <link rel="manifest" href="/imgs/favicon/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileColor" content="#000000">
     <meta name="msapplication-TileImage" content="/imgs/favicon/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#000000">
+    <style>
+html, body {
+  overflow: hidden !important;
+}
+html {
+  background-color: black;
+}
+.fade-in-text {
+  animation: fadeIn 3s;
+}
+.fade-in-slow {
+  animation: fadeIn 10s;
+}
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  20% { opacity: 0; } 
+  100% { opacity: 1; }
+}
+@keyframes fadeInSlow {
+  0% { opacity: 0; }
+  99% { opacity: 0; } 
+  100% { opacity: 1; }
+}
+</style>
   </head>
   <body>
 
