@@ -1,0 +1,101 @@
+@font-face {
+  font-family: 'Nunito Sans';
+  font-style: normal;
+  font-weight: 200;
+  src: local('Nunito Sans ExtraLight'), local('NunitoSans-ExtraLight'), url(/fonts/pe03MImSLYBIv1o4X1M8cc9yAs5tU1E.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Nunito Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Nunito Sans Regular'), local('NunitoSans-Regular'), url(/fonts/pe0qMImSLYBIv1o4X1M8cce9I9s.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+html, body, #gradientBackground, main {
+  overflow: hidden !important;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+html {
+  background-color: black;
+  font-family: 'Nunito Sans', sans-serif;
+}
+#gradientBackground {
+  height: 100%;
+  display: flex;
+  justify-items: center;
+  align-items: center;
+  z-index: 1;
+}
+#flowfield {
+  position: absolute;
+  z-index: 2;
+}
+#content {
+  width: 100%;
+  z-index: 3;
+}
+.heading, .text {
+  user-select: none;
+  display: block;
+  width: 100%;
+  color: white;
+  text-align: center;
+}
+.heading {
+  font-size: 24pt;
+  margin: 0.1rem 0 1rem 0;
+  font-weight: 200;
+  text-shadow: #000 0px 2px 5px;
+}
+.text {
+  font-size: 18pt;
+  font-weight: 200;
+  text-shadow: 0px 1px 2px#000;;
+  margin: 0.2rem 0 0.2rem 0;
+}
+.link {
+  color: white;
+  font-weight: normal;
+  text-decoration: none;
+}
+.link:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.fade-in-1 {
+  animation: fadeIn1 1.5s;
+}
+.fade-in-2 {
+  animation: fadeIn2 2.5s;
+}
+.fade-in-3 {
+  animation: fadeIn3 3.5s;
+}
+.fade-in-4 {
+  animation: fadeIn3 5s;
+}
+@keyframes fadeIn1 {
+  0% { opacity: 0; }
+  33% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes fadeIn2 {
+  0% { opacity: 0; }
+  60% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes fadeIn3 {
+  0% { opacity: 0; }
+  75% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes fadeIn4 {
+  0% { opacity: 0; }
+  80% { opacity: 0; }
+  100% { opacity: 1; }
+}

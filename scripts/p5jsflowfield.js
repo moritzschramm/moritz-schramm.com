@@ -1,6 +1,3 @@
-
-// TODO create class for circle and draw multiple circles over each other
-
 var points = [];
 var mult = 0.005;
 
