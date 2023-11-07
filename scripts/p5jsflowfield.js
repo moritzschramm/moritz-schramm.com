@@ -59,7 +59,7 @@ function draw() {
 	}
 }
 
-window.addEventListener("resize", function(event) {
+function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
     background('rgba(0,0,0,0.7)');
-});
+}
