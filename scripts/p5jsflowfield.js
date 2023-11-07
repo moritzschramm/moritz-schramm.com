@@ -21,12 +21,12 @@ function setup() {
 
 	shuffle(points, true);
 
-	r1 = 50;//random(255);
-	r2 = 255;//random(255);
-	g1 = 50;//random(255);
-	g2 = 255;//random(255);
-	b1 = 255;//random(255);
-	b2 = 50;//random(255);
+	r1 = 50;
+	r2 = 255;
+	g1 = 50;
+	g2 = 255;
+	b1 = 255;
+	b2 = 50;
 }
 
 function draw() {
@@ -58,3 +58,8 @@ function draw() {
 			line(oldX, oldY, points[i].x, points[i].y)
 	}
 }
+
+window.addEventListener("resize", function(event) {
+    resizeCanvas(windowWidth, windowHeight);
+    background('rgba(0,0,0,0.7)');
+});
