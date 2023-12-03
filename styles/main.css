@@ -99,3 +99,23 @@ html {
   80% { opacity: 0; }
   100% { opacity: 1; }
 }
+
+.icon {
+  display: inline-block;
+  margin-top: -5pt;
+  vertical-align: middle;
+  --size: 18pt;
+  background-size: var(--size) var(--size);
+  width: var(--size);
+  height: var(--size);
+  color: #ffffff;
+}
+.github-icon {
+  background-image: url(github.svg);
+}
+.mail-icon {
+  background-image: url(mail.svg);
+}
+.key-icon {
+  background-image: url(lock.svg);
+}
