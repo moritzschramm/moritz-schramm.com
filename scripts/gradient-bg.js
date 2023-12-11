@@ -13,8 +13,6 @@ var gradientSpeed = 0.001;
 var gradientBackground = document.getElementById("gradientBackground");
 
 function update() {
-
-  console.log("HEllo");
   
   var c0_0 = colors[colorIndices[0]];
   var c0_1 = colors[colorIndices[1]];
