@@ -43,6 +43,7 @@ section {
 }
 #content {
   margin: 0px auto;
+  padding: 0 1rem;
   z-index: 4;
 }
 .heading {
@@ -72,6 +73,7 @@ section {
   color: white;
   font-weight: normal;
   text-decoration: none;
+  white-space: nowrap;
 }
 .link:hover {
   color: white;
@@ -109,24 +111,4 @@ section {
   0% { opacity: 0; }
   80% { opacity: 0; }
   100% { opacity: 1; }
-}
-
-.icon {
-  display: inline-block;
-  margin-top: -5pt;
-  vertical-align: middle;
-  --size: 18pt;
-  background-size: var(--size) var(--size);
-  width: var(--size);
-  height: var(--size);
-  color: #ffffff;
-}
-.github-icon {
-  background-image: url(github.svg);
-}
-.mail-icon {
-  background-image: url(mail.svg);
-}
-.key-icon {
-  background-image: url(lock.svg);
 }
