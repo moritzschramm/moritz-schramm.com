@@ -26,7 +26,6 @@ html {
 section {
   height: 100%;
   display: flex;
-  justify-items: center;
   align-items: center;
   z-index: 1;
 }
@@ -89,7 +88,7 @@ section {
   animation: fadeIn3 3.5s;
 }
 .fade-in-4 {
-  animation: fadeIn3 5s;
+  animation: fadeIn4 5s;
 }
 @keyframes fadeIn1 {
   0% { opacity: 0; }
