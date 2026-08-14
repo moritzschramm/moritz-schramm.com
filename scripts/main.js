@@ -7,6 +7,8 @@
 	canvas.style.height = '100%';
 	document.getElementById('flowfield').appendChild(canvas);
 
+	var contentEl = document.getElementById('content');
+
 	var gl = canvas.getContext('webgl', {
 		alpha: true,
 		antialias: false,
@@ -21,7 +23,8 @@
 
 	var FLOATS_PER_VERTEX = 6; // x, y, r, g, b, a
 	var VERTEX_STRIDE = FLOATS_PER_VERTEX * 4;
-	var TARGET_POINT_COUNT = 6000;
+	var TARGET_POINT_COUNT = 30000; // number of worms
+	var TRAIL_LENGTH = 40; // positions kept per worm (39 segments each)
 	var mult = 0.005;
 	var PI4 = 4 * Math.PI;
 
@@ -31,11 +34,13 @@
 	var FRAME_INTERVAL = 1000 / TARGET_FPS;
 	var REFERENCE_FPS = 60; // the frame rate the movement speed was originally tuned for
 	var REFERENCE_INTERVAL = 1000 / REFERENCE_FPS;
-	var SPEED_MULTIPLIER = 1.8;
+	var SPEED_MULTIPLIER = 0.6;
 	var MAX_STEP_SCALE = 5; // clamp movement jump after long pauses (e.g. backgrounded tab)
-	var WARMUP_DURATION_MS = 60000; // time for all points to activate
-	var SETTLE_DURATION_MS = 30000; // extra time to run at full density before stopping
-	var STOP_DURATION_MS = WARMUP_DURATION_MS + SETTLE_DURATION_MS;
+	var TIME_SCALE = 1 / 20000; // z advances 1 noise cell per 15s: field reshapes over tens of seconds
+	var COLOR_TIME_SCALE = 1 / 20000; // how fast the color noise drifts over time
+	var COLOR_SPATIAL_SCALE = 0.0015; // coarser than the flow noise: nearby trails share color regions
+	var WARMUP_DURATION_MS = 30000; // time for all worms to activate, then run at full density forever
+	var CLEAR_MARGIN = 50; // extra px beyond the text block's bounding box before trails fade back in
 
 	var startTime = null;
 	var lastFrameTime = 0;
@@ -94,6 +99,8 @@
 	// is [0, 0.5), not [0, 1) - reproduced here rather than normalized away.
 	var PERLIN_YWRAPB = 4;
 	var PERLIN_YWRAP = 1 << PERLIN_YWRAPB;
+	var PERLIN_ZWRAPB = 8;
+	var PERLIN_ZWRAP = 1 << PERLIN_ZWRAPB;
 	var PERLIN_SIZE = 4095;
 	var PERLIN_AMP = 0.5;
 	var perlin = new Array(4096);
@@ -101,16 +108,23 @@
 
 	function scaledCosine(x) { return 0.5 * (1 - Math.cos(x * Math.PI)); }
 
-	function noise2(x, y) {
+	// z is a slowly-advancing "time" coordinate: sampling a 2D slice of a 3D
+	// noise volume that drifts along z makes the flow field's directions
+	// gradually reshape while the animation runs, instead of staying fixed.
+	// At z = 0 this is identical to the 2D-only version it replaces.
+	function noise3(x, y, z) {
 		if (x < 0) x = -x;
 		if (y < 0) y = -y;
+		if (z < 0) z = -z;
 
 		var xi = Math.floor(x);
 		var yi = Math.floor(y);
+		var zi = Math.floor(z);
 		var xf = x - xi;
 		var yf = y - yi;
+		var zf = z - zi;
 
-		var of = xi + (yi << PERLIN_YWRAPB);
+		var of = xi + (yi << PERLIN_YWRAPB) + (zi << PERLIN_ZWRAPB);
 		var rxf = scaledCosine(xf);
 		var ryf = scaledCosine(yf);
 
@@ -119,6 +133,15 @@
 		var n2 = perlin[(of + PERLIN_YWRAP) & PERLIN_SIZE];
 		n2 += rxf * (perlin[(of + PERLIN_YWRAP + 1) & PERLIN_SIZE] - n2);
 		n1 += ryf * (n2 - n1);
+
+		of += PERLIN_ZWRAP;
+		n2 = perlin[of & PERLIN_SIZE];
+		n2 += rxf * (perlin[(of + 1) & PERLIN_SIZE] - n2);
+		var n3 = perlin[(of + PERLIN_YWRAP) & PERLIN_SIZE];
+		n3 += rxf * (perlin[(of + PERLIN_YWRAP + 1) & PERLIN_SIZE] - n3);
+		n2 += ryf * (n3 - n2);
+
+		n1 += scaledCosine(zf) * (n2 - n1);
 
 		return n1 * PERLIN_AMP;
 	}
@@ -168,7 +191,7 @@
 	};
 
 	// ---- change this to switch the flow field's colormap ----
-	var COLOR_MAP_NAME = 'inferno';
+	var COLOR_MAP_NAME = 'rgb';
 
 	var colorStops = COLOR_MAPS[COLOR_MAP_NAME];
 	var colorOut = [0, 0, 0];
@@ -186,8 +209,14 @@
 	}
 
 	// ---- simulation state ----
-	var width, height, circRadius, halfWidth, halfHeight;
-	var pointsX, pointsY, pointCount, vertexData;
+	// trailX/trailY are ring buffers: trailX[i * TRAIL_LENGTH + slot] holds
+	// worm i's position at that slot. historyHead is the slot that gets
+	// overwritten on the *next* step, so it's also the oldest currently-valid
+	// sample; walking forward TRAIL_LENGTH - 1 slots from it visits the whole
+	// worm from tail to head.
+	var width, height, circRadius, halfWidth, halfHeight, clearRadius;
+	var trailX, trailY, pointCount, vertexData;
+	var historyHead = 0;
 
 	function setupPoints() {
 		var space = Math.sqrt((width * height) / TARGET_POINT_COUNT);
@@ -195,28 +224,50 @@
 		var rows = Math.max(1, Math.floor(height / space));
 
 		pointCount = cols * rows;
-		pointsX = new Float32Array(pointCount);
-		pointsY = new Float32Array(pointCount);
+
+		var startX = new Float32Array(pointCount);
+		var startY = new Float32Array(pointCount);
 
 		var idx = 0;
 		for (var xi = 0; xi < cols; xi++) {
 			for (var yi = 0; yi < rows; yi++) {
-				pointsX[idx] = xi * space + (Math.random() * 20 - 10);
-				pointsY[idx] = yi * space + (Math.random() * 20 - 10);
+				startX[idx] = xi * space + (Math.random() * 20 - 10);
+				startY[idx] = yi * space + (Math.random() * 20 - 10);
 				idx++;
 			}
 		}
 
-		// Fisher-Yates shuffle so points don't activate in a raster-scan order
+		// Fisher-Yates shuffle so worms don't activate in a raster-scan order
 		for (var i = pointCount - 1; i > 0; i--) {
 			var j = Math.floor(Math.random() * (i + 1));
-			var tx = pointsX[i]; pointsX[i] = pointsX[j]; pointsX[j] = tx;
-			var ty = pointsY[i]; pointsY[i] = pointsY[j]; pointsY[j] = ty;
+			var tx = startX[i]; startX[i] = startX[j]; startX[j] = tx;
+			var ty = startY[i]; startY[i] = startY[j]; startY[j] = ty;
 		}
 
-		vertexData = new Float32Array(pointCount * 2 * FLOATS_PER_VERTEX);
+		trailX = new Float32Array(pointCount * TRAIL_LENGTH);
+		trailY = new Float32Array(pointCount * TRAIL_LENGTH);
+		for (var p = 0; p < pointCount; p++) {
+			for (var s = 0; s < TRAIL_LENGTH; s++) {
+				trailX[p * TRAIL_LENGTH + s] = startX[p];
+				trailY[p * TRAIL_LENGTH + s] = startY[p];
+			}
+		}
+		historyHead = 0;
+
+		var maxSegments = pointCount * (TRAIL_LENGTH - 1);
+		vertexData = new Float32Array(maxSegments * 2 * FLOATS_PER_VERTEX);
 
 		gl.bufferData(gl.ARRAY_BUFFER, vertexData.byteLength, gl.DYNAMIC_DRAW);
+	}
+
+	// #content is centered by the page's flex layout, so it shares the same
+	// center as the canvas - only its half-diagonal (plus a margin) is needed
+	// to know how far the fade-out zone should reach. Called on resize, and
+	// again once web fonts finish loading, since a font swap can reflow the
+	// text to a different size than whatever fallback font was measured first.
+	function updateClearRadius() {
+		var contentRect = contentEl.getBoundingClientRect();
+		clearRadius = Math.sqrt(contentRect.width * contentRect.width + contentRect.height * contentRect.height) / 2 + CLEAR_MARGIN;
 	}
 
 	function resize() {
@@ -231,6 +282,8 @@
 		halfWidth = width / 2;
 		halfHeight = height / 2;
 
+		updateClearRadius();
+
 		gl.clearColor(0, 0, 0, 0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 
@@ -240,54 +293,106 @@
 		lastFrameTime = 0;
 
 		if (REDUCED_MOTION) {
-			// no animation: draw one fully-settled-looking static frame and stop
-			stepAndDraw(pointCount, 1);
+			// no animation: advance every worm through a fixed (non-drifting)
+			// field to fill its trail, then draw one settled-looking static
+			// frame and stop - no rAF loop at all
+			for (var s = 0; s < TRAIL_LENGTH; s++) {
+				stepAndDraw(pointCount, 1, 0, 0);
+			}
 		} else {
 			startAnimation();
 		}
 	}
 
-	function stepAndDraw(maxActive, stepScale) {
-		var segmentCount = 0;
+	function stepAndDraw(maxActive, stepScale, flowTime, colorTime) {
+		var prevSlot = (historyHead - 1 + TRAIL_LENGTH) % TRAIL_LENGTH;
 
 		for (var i = 0; i < maxActive; i++) {
-			var oldX = pointsX[i];
-			var oldY = pointsY[i];
+			var base = i * TRAIL_LENGTH;
+			var oldX = trailX[base + prevSlot];
+			var oldY = trailY[base + prevSlot];
 
-			var dx = oldX - halfWidth;
-			var dy = oldY - halfHeight;
-			var distCenter = Math.sqrt(dx * dx + dy * dy);
-
-			var normalizedAngle = (Math.atan2(dy, dx) + Math.PI) / (2 * Math.PI);
-			colormapColor(1 - Math.abs(2 * normalizedAngle - 1), colorOut);
-
-			var flowAngle = noise2(oldX * mult, oldY * mult) * PI4;
+			var flowAngle = noise3(oldX * mult, oldY * mult, flowTime) * PI4;
 			var newX = oldX + Math.cos(flowAngle) * stepScale;
 			var newY = oldY + Math.sin(flowAngle) * stepScale;
 
-			pointsX[i] = newX;
-			pointsY[i] = newY;
+			var ndx = newX - halfWidth;
+			var ndy = newY - halfHeight;
+			if (ndx * ndx + ndy * ndy > circRadius * circRadius) {
+				// this worm drifted out of the visible circle for good (the flow
+				// field never brings points back) - respawn it fresh elsewhere
+				// so the visible worm count stays roughly constant forever
+				newX = Math.random() * width;
+				newY = Math.random() * height;
+				for (var s = 0; s < TRAIL_LENGTH; s++) {
+					trailX[base + s] = newX;
+					trailY[base + s] = newY;
+				}
+			} else {
+				trailX[base + historyHead] = newX;
+				trailY[base + historyHead] = newY;
+			}
+		}
 
-			if (distCenter < circRadius) {
-				var base = segmentCount * 2 * FLOATS_PER_VERTEX;
+		historyHead = (historyHead + 1) % TRAIL_LENGTH;
+
+		// redraw the whole canvas fresh from the current trails every frame -
+		// nothing here is ever appended to a permanent buffer, so a worm's
+		// tail (and the field it was drawn from) can freely change shape
+		gl.clear(gl.COLOR_BUFFER_BIT);
+
+		var segmentCount = 0;
+
+		for (var p = 0; p < maxActive; p++) {
+			var pBase = p * TRAIL_LENGTH;
+
+			for (var k = 0; k < TRAIL_LENGTH - 1; k++) {
+				var slotA = (historyHead + k) % TRAIL_LENGTH;
+				var slotB = (historyHead + k + 1) % TRAIL_LENGTH;
+
+				var ax = trailX[pBase + slotA];
+				var ay = trailY[pBase + slotA];
+				var bx = trailX[pBase + slotB];
+				var by = trailY[pBase + slotB];
+
+				var dx = ax - halfWidth;
+				var dy = ay - halfHeight;
+				var distCenter = Math.sqrt(dx * dx + dy * dy);
+
+				if (distCenter >= circRadius) continue;
+
+				var noiseT = noise3(ax * COLOR_SPATIAL_SCALE, ay * COLOR_SPATIAL_SCALE, colorTime) * 2;
+				colormapColor(noiseT, colorOut);
+
+				var ageFade = k / (TRAIL_LENGTH - 2); // 0 at the tail, 1 at the head
+
+				// worms move through the text area completely undisturbed - they
+				// just fade out as they get close, with a soft (smoothstep, zero
+				// derivative at both ends) curve so there's no visible edge to
+				// the fade, unlike a hard-edged movement bias would produce
+				var ct = Math.min(1, distCenter / clearRadius);
+				var clearFade = ct * ct * (3 - 2 * ct);
+
+				var alpha = ageFade * (1 - distCenter / circRadius) * clearFade;
+
+				var vbase = segmentCount * 2 * FLOATS_PER_VERTEX;
 				var r = colorOut[0] / 255;
 				var g = colorOut[1] / 255;
 				var b = colorOut[2] / 255;
-				var a = 1 - distCenter / circRadius;
 
-				vertexData[base] = oldX;
-				vertexData[base + 1] = oldY;
-				vertexData[base + 2] = r;
-				vertexData[base + 3] = g;
-				vertexData[base + 4] = b;
-				vertexData[base + 5] = a;
+				vertexData[vbase] = ax;
+				vertexData[vbase + 1] = ay;
+				vertexData[vbase + 2] = r;
+				vertexData[vbase + 3] = g;
+				vertexData[vbase + 4] = b;
+				vertexData[vbase + 5] = alpha;
 
-				vertexData[base + 6] = newX;
-				vertexData[base + 7] = newY;
-				vertexData[base + 8] = r;
-				vertexData[base + 9] = g;
-				vertexData[base + 10] = b;
-				vertexData[base + 11] = a;
+				vertexData[vbase + 6] = bx;
+				vertexData[vbase + 7] = by;
+				vertexData[vbase + 8] = r;
+				vertexData[vbase + 9] = g;
+				vertexData[vbase + 10] = b;
+				vertexData[vbase + 11] = alpha;
 
 				segmentCount++;
 			}
@@ -312,11 +417,6 @@
 		}
 		var elapsed = timestamp - startTime;
 
-		if (elapsed >= STOP_DURATION_MS) {
-			animating = false;
-			return; // fully settled: stop scheduling further frames
-		}
-
 		var dt = timestamp - lastFrameTime;
 		if (dt < FRAME_INTERVAL) {
 			requestAnimationFrame(frame);
@@ -329,11 +429,17 @@
 		var stepScale = Math.min((dt / REFERENCE_INTERVAL) * SPEED_MULTIPLIER, MAX_STEP_SCALE);
 
 		var warmupProgress = Math.min(1, elapsed / WARMUP_DURATION_MS);
-		stepAndDraw(Math.floor(warmupProgress * pointCount), stepScale);
+		var flowTime = elapsed * TIME_SCALE;
+		var colorTime = elapsed * COLOR_TIME_SCALE;
+		stepAndDraw(Math.floor(warmupProgress * pointCount), stepScale, flowTime, colorTime);
 
 		requestAnimationFrame(frame);
 	}
 
 	window.addEventListener('resize', resize);
 	resize();
+
+	if (document.fonts && document.fonts.ready) {
+		document.fonts.ready.then(updateClearRadius);
+	}
 })();
