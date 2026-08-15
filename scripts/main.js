@@ -23,10 +23,24 @@
 
 	var FLOATS_PER_VERTEX = 6; // x, y, r, g, b, a
 	var VERTEX_STRIDE = FLOATS_PER_VERTEX * 4;
-	var TARGET_POINT_COUNT = 10000; // number of worms
 	var TRAIL_LENGTH = 40; // positions kept per worm (39 segments each)
 	var mult = 0.005;
 	var PI4 = 4 * Math.PI;
+
+	// adaptive worm count: start at the top tier, then during the first
+	// couple of warmup seconds measure actual stepAndDraw() time per worm
+	// and pick whichever tier that extrapolates to fit the frame budget
+	var QUALITY_LEVELS = [10000, 6000, 3500, 2000, 1000];
+	var qualityLevel = 0;
+	var qualityCalibrated = false;
+	var PROBE_SKIP_FRAMES = 10; // let a few worms activate first so fixed per-call overhead doesn't skew the estimate
+	var PROBE_SAMPLE_FRAMES = 40;
+	var SLOW_FRAME_BUDGET_MS = 10; // target ceiling for stepAndDraw() at full density
+	var probeFrameCount = 0;
+	var probeMsPerWormSum = 0;
+	var activeCap = Infinity; // ceiling on active worms after calibration; never lowered below what's already visible
+
+	var TARGET_POINT_COUNT = QUALITY_LEVELS[qualityLevel];
 
 	var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
@@ -39,7 +53,7 @@
 	var TIME_SCALE = 1 / 20000; // z advances 1 noise cell per 15s: field reshapes over tens of seconds
 	var COLOR_TIME_SCALE = 1 / 20000; // how fast the color noise drifts over time
 	var COLOR_SPATIAL_SCALE = 0.0015; // coarser than the flow noise: nearby trails share color regions
-	var WARMUP_DURATION_MS = 30000; // time for all worms to activate, then run at full density forever
+	var WARMUP_DURATION_MS = 15000; // time for all worms to activate, then run at full density forever
 	var CLEAR_MARGIN = 50; // extra px beyond the text block's bounding box before trails fade back in
 	var ALPHA_CUTOFF = 0.01; // skip drawing segments this faint or fainter - invisible, not worth the vertices
 
@@ -268,6 +282,19 @@
 	// text to a different size than whatever fallback font was measured first.
 	function updateClearRadius() {
 		var contentRect = contentEl.getBoundingClientRect();
+
+		// a near-zero result means the text hasn't actually been laid out yet
+		// (seen this read as 0x0 on the very first synchronous measurement in
+		// some browsers, even though getBoundingClientRect is supposed to force
+		// a layout) - don't trust it, keep a sane fallback and retry next frame
+		if (contentRect.width < 10 && contentRect.height < 10) {
+			if (clearRadius === undefined) {
+				clearRadius = Math.min(width, height) * 0.3;
+			}
+			requestAnimationFrame(updateClearRadius);
+			return;
+		}
+
 		clearRadius = Math.sqrt(contentRect.width * contentRect.width + contentRect.height * contentRect.height) / 2 + CLEAR_MARGIN;
 	}
 
@@ -448,9 +475,47 @@
 		var warmupProgress = Math.min(1, elapsed / WARMUP_DURATION_MS);
 		var flowTime = elapsed * TIME_SCALE;
 		var colorTime = elapsed * COLOR_TIME_SCALE;
-		stepAndDraw(Math.floor(warmupProgress * pointCount), stepScale, flowTime, colorTime);
+		var maxActiveNow = Math.min(Math.floor(warmupProgress * pointCount), activeCap);
+
+		if (qualityCalibrated) {
+			stepAndDraw(maxActiveNow, stepScale, flowTime, colorTime);
+		} else {
+			var probeStart = performance.now();
+			stepAndDraw(maxActiveNow, stepScale, flowTime, colorTime);
+			calibrateQuality(maxActiveNow, performance.now() - probeStart);
+		}
 
 		requestAnimationFrame(frame);
+	}
+
+	function calibrateQuality(maxActiveNow, durationMs) {
+		if (maxActiveNow === 0) return; // nothing active yet, not a useful sample
+
+		probeFrameCount++;
+		if (probeFrameCount <= PROBE_SKIP_FRAMES) return;
+
+		probeMsPerWormSum += durationMs / maxActiveNow;
+		if (probeFrameCount < PROBE_SKIP_FRAMES + PROBE_SAMPLE_FRAMES) return;
+
+		qualityCalibrated = true;
+
+		var avgMsPerWorm = probeMsPerWormSum / PROBE_SAMPLE_FRAMES;
+		while (
+			qualityLevel < QUALITY_LEVELS.length - 1 &&
+			avgMsPerWorm * QUALITY_LEVELS[qualityLevel] > SLOW_FRAME_BUDGET_MS
+		) {
+			qualityLevel++;
+		}
+
+		if (qualityLevel > 0) {
+			// qualityLevel only ever increases above its starting value of 0
+			// here, so this means the loop above actually picked a lower tier.
+			// Cap future growth via activeCap rather than shrinking pointCount -
+			// never below maxActiveNow, so nothing already visible disappears,
+			// it just stops growing further instead of one smooth animation
+			TARGET_POINT_COUNT = QUALITY_LEVELS[qualityLevel];
+			activeCap = Math.max(maxActiveNow, TARGET_POINT_COUNT);
+		}
 	}
 
 	window.addEventListener('resize', resize);
