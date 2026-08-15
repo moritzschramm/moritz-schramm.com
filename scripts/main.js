@@ -23,7 +23,7 @@
 
 	var FLOATS_PER_VERTEX = 6; // x, y, r, g, b, a
 	var VERTEX_STRIDE = FLOATS_PER_VERTEX * 4;
-	var TARGET_POINT_COUNT = 30000; // number of worms
+	var TARGET_POINT_COUNT = 10000; // number of worms
 	var TRAIL_LENGTH = 40; // positions kept per worm (39 segments each)
 	var mult = 0.005;
 	var PI4 = 4 * Math.PI;
@@ -41,6 +41,7 @@
 	var COLOR_SPATIAL_SCALE = 0.0015; // coarser than the flow noise: nearby trails share color regions
 	var WARMUP_DURATION_MS = 30000; // time for all worms to activate, then run at full density forever
 	var CLEAR_MARGIN = 50; // extra px beyond the text block's bounding box before trails fade back in
+	var ALPHA_CUTOFF = 0.01; // skip drawing segments this faint or fainter - invisible, not worth the vertices
 
 	var startTime = null;
 	var lastFrameTime = 0;
@@ -335,6 +336,7 @@
 		}
 
 		historyHead = (historyHead + 1) % TRAIL_LENGTH;
+		var headSlot = (historyHead - 1 + TRAIL_LENGTH) % TRAIL_LENGTH; // most recently written slot
 
 		// redraw the whole canvas fresh from the current trails every frame -
 		// nothing here is ever appended to a permanent buffer, so a worm's
@@ -342,9 +344,22 @@
 		gl.clear(gl.COLOR_BUFFER_BIT);
 
 		var segmentCount = 0;
+		var circRadiusSq = circRadius * circRadius;
 
 		for (var p = 0; p < maxActive; p++) {
 			var pBase = p * TRAIL_LENGTH;
+
+			// color noise uses a coarse spatial scale, so nearby segments of
+			// the same short worm would sample almost the same value anyway -
+			// sampling once per worm (at its head) instead of once per segment
+			// cuts the noise3()/colormapColor() calls by ~TRAIL_LENGTH times
+			var hx = trailX[pBase + headSlot];
+			var hy = trailY[pBase + headSlot];
+			var noiseT = noise3(hx * COLOR_SPATIAL_SCALE, hy * COLOR_SPATIAL_SCALE, colorTime) * 2;
+			colormapColor(noiseT, colorOut);
+			var r = colorOut[0] / 255;
+			var g = colorOut[1] / 255;
+			var b = colorOut[2] / 255;
 
 			for (var k = 0; k < TRAIL_LENGTH - 1; k++) {
 				var slotA = (historyHead + k) % TRAIL_LENGTH;
@@ -357,12 +372,13 @@
 
 				var dx = ax - halfWidth;
 				var dy = ay - halfHeight;
-				var distCenter = Math.sqrt(dx * dx + dy * dy);
+				var distSq = dx * dx + dy * dy;
 
-				if (distCenter >= circRadius) continue;
+				// cheap squared-distance rejection first, so segments clearly
+				// outside the visible circle never pay for a sqrt at all
+				if (distSq >= circRadiusSq) continue;
 
-				var noiseT = noise3(ax * COLOR_SPATIAL_SCALE, ay * COLOR_SPATIAL_SCALE, colorTime) * 2;
-				colormapColor(noiseT, colorOut);
+				var distCenter = Math.sqrt(distSq);
 
 				var ageFade = k / (TRAIL_LENGTH - 2); // 0 at the tail, 1 at the head
 
@@ -375,10 +391,11 @@
 
 				var alpha = ageFade * (1 - distCenter / circRadius) * clearFade;
 
+				// skip vertices for segments too faint to see - saves the
+				// buffer writes and the GPU fill/blend cost of drawing them
+				if (alpha < ALPHA_CUTOFF) continue;
+
 				var vbase = segmentCount * 2 * FLOATS_PER_VERTEX;
-				var r = colorOut[0] / 255;
-				var g = colorOut[1] / 255;
-				var b = colorOut[2] / 255;
 
 				vertexData[vbase] = ax;
 				vertexData[vbase + 1] = ay;
