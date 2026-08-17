@@ -68,7 +68,7 @@ section {
 }
 .list {
   list-style: none;
-  padding-left: 0;
+  padding-left: 1rem;
 }
 .list-item {
   user-select: none;
@@ -77,6 +77,11 @@ section {
   font-weight: 200;
   text-shadow: 0px 1px 2px#000;
   margin: 0.2rem 0 0.2rem 0;
+  list-style-type: '› ';
+  list-style-position: outside;
+}
+.list-item::marker {
+  color: white;
 }
 .link {
   color: white;
